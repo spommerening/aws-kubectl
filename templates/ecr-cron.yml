@@ -1,0 +1,43 @@
+---
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: aws-registry-credential-cron
+  namespace: infrastructure
+spec:
+  schedule: "* */8 * * *"
+  successfulJobsHistoryLimit: 2
+  failedJobsHistoryLimit: 2
+  jobTemplate:
+    spec:
+      backoffLimit: 4
+      template:
+        spec:
+          serviceAccountName: ecr-update-service-account
+          terminationGracePeriodSeconds: 0
+          restartPolicy: Never
+          containers:
+          - name: kubectl
+            imagePullPolicy: Always
+            image: spom/aws-kubectl:v1.12.2
+            command:
+              - "/run.sh"
+            env:
+              - name: AWS_ACCOUNT
+                value: "YOUR-AWS-ACCOUNT"
+              - name: AWS_REGION
+                value: "eu-central-1"
+              - name: NAMESPACES
+                value: "infrastructure live"
+                # you can remove the following values if you run inside AWS
+                # and do use a role for accessing your ECR (see README.md)
+              - name: AWS_ACCESS_KEY_ID
+                valueFrom:
+                  secretKeyRef:
+                    name: aws-secrets
+                    key: aws-access-key-id
+              - name: AWS_SECRET_ACCESS_KEY
+                valueFrom:
+                  secretKeyRef:
+                    name: aws-secrets
+                    key: aws-secret-access-key
