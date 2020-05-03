@@ -19,7 +19,7 @@ spec:
           containers:
           - name: kubectl
             imagePullPolicy: Always
-            image: spom/aws-kubectl:v1.12.2
+            image: spom/aws-kubectl:v1.18.2
             command:
               - "/run.sh"
             env:

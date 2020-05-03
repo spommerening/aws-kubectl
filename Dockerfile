@@ -1,7 +1,7 @@
 FROM python:alpine
 MAINTAINER Stefan Pommerening <pom@dmsp.de>
 
-ENV KUBECTL_VERSION "v1.12.2"
+ENV KUBECTL_VERSION "v1.18.2"
 
 RUN apk --no-cache add curl
 ADD run.sh /run.sh
